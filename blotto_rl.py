@@ -31,6 +31,7 @@ from open_spiel.python.algorithms import random_agent
 # QLearner: tabular Q-learning. Stores Q(state, action) estimates in a
 # plain Python dict keyed by the string representation of the observation.
 from open_spiel.python.algorithms import tabular_qlearner
+from sarsa import SARSAAgent
 
 
 # rl_tools: utility schedulers for RL hyperparameters such as epsilon
@@ -96,13 +97,14 @@ print("Possible Actions:", num_actions)
 # Keeping ε constant (no decay) maintains exploration throughout all 1M
 # episodes, which is useful when facing a fixed random opponent.
 rl_agent = tabular_qlearner.QLearner(player_id=0, num_actions=num_actions, epsilon_schedule=rl_tools.ConstantSchedule(0.2))
+rl_agent = SARSAAgent(player_id=0, num_actions=num_actions, epsilon_schedule=rl_tools.ConstantSchedule(0.2))
 
 
 # RandomAgent: picks uniformly at random from all legal actions every step.
 # It never updates any internal model — it is purely a stochastic baseline.
 # Training against it teaches the RL agent to exploit the *average* blotto
 # distribution, which can reveal strong dominant strategies.
-opponent = tabular_qlearner.QLearner(player_id=1, num_actions=num_actions, epsilon_schedule=rl_tools.ConstantSchedule(0.2))
+opponent = random_agent.RandomAgent(player_id=1, num_actions=num_actions)
 
 # ── Tracking Variables ────────────────────────────────────────
 
