@@ -113,10 +113,11 @@ while episode < MAX_EPISODES:
     
 
     print()
-# plot makes one graph (so two graphs here)
+# plot makes one graph (i.e. plots a line on a graph)
 plt.plot(episodeArr, x)
 plt.plot(episodeArr, y)
 plt.plot(x, y)
+# so three lines on one graph here
 plt.show()
 # =========================================================
 
