@@ -8,6 +8,10 @@
 # ============================================================
 
 import numpy as np
+# =======================================================
+# used this library to make graphs
+import matplotlib.pyplot as plt
+# =======================================================
 
 from open_spiel.python import rl_environment
 from open_spiel.python.algorithms import random_agent
@@ -55,6 +59,14 @@ won_games = [0, 0]
 rl_won = []
 opp_won = []
 
+# ========================================================
+# These are where the points are going to be stored
+# (values for x and y of the graph)
+x = []
+y = []
+episodeArr = []
+# ========================================================
+
 last_probs = None
 
 # ── Training Loop ─────────────────────────────────────────────
@@ -93,7 +105,20 @@ while episode < MAX_EPISODES:
     rl_won.append(won_games[0])
     opp_won.append(won_games[1])
 
+# =========================================================
+    # Add points to array
+    x.append(won_games[0])
+    y.append(won_games[1])
+    episodeArr.append(episode)
+    
+
     print()
+# plot makes one graph (so two graphs here)
+plt.plot(episodeArr, x)
+plt.plot(episodeArr, y)
+plt.plot(x, y)
+plt.show()
+# =========================================================
 
 # ── Post-Training Analysis ────────────────────────────────────
 
