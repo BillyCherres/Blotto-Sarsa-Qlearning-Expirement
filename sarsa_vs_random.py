@@ -113,11 +113,14 @@ while episode < MAX_EPISODES:
     
 
     print()
-# plot makes one graph (i.e. plots a line on a graph)
-plt.plot(episodeArr, x)
-plt.plot(episodeArr, y)
-plt.plot(x, y)
-# so three lines on one graph here
+# in one graphs
+# plot the points
+plt.plot(episodeArr, x, label = "Sarsa Wins")
+plt.plot(episodeArr, y, label = "Random Wins")
+plt.plot(x, y, label = "Sarsa vs Random wins" )
+
+
+plt.legend()
 plt.show()
 # =========================================================
 
