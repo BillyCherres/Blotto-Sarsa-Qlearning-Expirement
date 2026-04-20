@@ -50,7 +50,11 @@ rl_agent = tabular_qlearner.QLearner(
 )
 
 # RandomAgent: uniform random baseline, never updates any model.
-opponent = random_agent.RandomAgent(player_id=1, num_actions=num_actions)
+opponent = tabular_qlearner.QLearner(
+    player_id=0,
+    num_actions=num_actions,
+    epsilon_schedule=rl_tools.ConstantSchedule(0.2)
+)
 
 # ── Tracking Variables ────────────────────────────────────────
 

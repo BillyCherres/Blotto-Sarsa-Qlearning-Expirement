@@ -96,15 +96,15 @@ print("Possible Actions:", num_actions)
 #   20 % of the time: explore — pick a uniformly random action.
 # Keeping ε constant (no decay) maintains exploration throughout all 1M
 # episodes, which is useful when facing a fixed random opponent.
-rl_agent = tabular_qlearner.QLearner(player_id=0, num_actions=num_actions, epsilon_schedule=rl_tools.ConstantSchedule(0.2))
-rl_agent = SARSAAgent(player_id=0, num_actions=num_actions, epsilon_schedule=rl_tools.ConstantSchedule(0.2))
+opponent = tabular_qlearner.QLearner(player_id=1, num_actions=num_actions, epsilon_schedule=rl_tools.ConstantSchedule(0.2))
+#rl_agent = SARSAAgent(player_id=0, num_actions=num_actions, epsilon_schedule=rl_tools.ConstantSchedule(0.2))
 
 
 # RandomAgent: picks uniformly at random from all legal actions every step.
 # It never updates any internal model — it is purely a stochastic baseline.
 # Training against it teaches the RL agent to exploit the *average* blotto
 # distribution, which can reveal strong dominant strategies.
-opponent = random_agent.RandomAgent(player_id=1, num_actions=num_actions)
+rl_agent = random_agent.RandomAgent(player_id=0, num_actions=num_actions)
 
 # ── Tracking Variables ────────────────────────────────────────
 
@@ -200,7 +200,7 @@ print("RL Agent:", int(won_games[0]))
 print('Opponent:', int(won_games[1]))
 # Print the last StepOutput — shows the action taken on episode 1M and
 # the probability distribution the ε-greedy policy put over all actions.
-print(last_probs)
+
 
 # rl_agent._q_values is a dict-of-dicts:
 #   _q_values[obs_string][action_index] → float Q-value
@@ -211,15 +211,7 @@ print(last_probs)
 # So there is only ONE key in _q_values that matters, and printing it shows
 # the entire learned Q-table.
 #print(len(rl_agent._q_values))
-#print(rl_agent._q_values.keys())
-print(rl_agent._q_values['[0.0]'])
 
-# Build a flat list of all Q-values for every action from the start state.
-# We will sort this to rank actions from best to worst.
-q_list = []
-for act in rl_agent._q_values['[0.0]'].keys():
-    q_val = rl_agent._q_values['[0.0]'][act]  # Q-value the agent learned for this allocation
-    q_list.append(q_val)
 
 # Print the ranked Q-value table: highest Q-value first.
 # High Q-value → this Blotto allocation won frequently against the random opponent.
@@ -228,19 +220,7 @@ for act in rl_agent._q_values['[0.0]'].keys():
 # 'done' is a deduplication set: multiple actions can share the same Q-value
 # (common early in training). We print each unique value exactly once, then
 # list every action tied at that value.
-done = set()
-for val in sorted(q_list, reverse=True):  # Descending: best-learned actions first
-    if val in done:
-        continue  # Already printed this Q-value tier — skip
 
-    done.add(val)
-
-    # Find every action whose Q-value equals 'val' and print details.
-    for act in rl_agent._q_values['[0.0]'].keys():
-        if val == rl_agent._q_values['[0.0]'][act]:
-            act_string = environment.get_state.action_to_string(0, act)
-            # Format: Q-value | action index | human-readable allocation string
-            print(val, act, act_string)
 
 
 #print()

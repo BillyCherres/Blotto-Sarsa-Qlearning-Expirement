@@ -53,8 +53,8 @@ class universalBlotto :
         print("Possible Actions:", self.num_actions)
 
         # ── Agents ────────────────────────────────────────────────────
-        self.p1 = self.playerSetUp(self.p1Type)
-        self.p2 = self.playerSetUp(self.p2Type)
+        self.p1 = self.playerSetUp(self.p1Type, 0)
+        self.p2 = self.playerSetUp(self.p2Type, 1)
         self.p1Label = self.playerLables(self.p1Type)
         self.p2Label = self.playerLables(self.p2Type)
         
@@ -92,8 +92,8 @@ class universalBlotto :
         while simulation < self.simCount:
             print("Current Simulation: ", simulation)
             # reset agents and personal scores
-            self.p1 = self.playerSetUp(self.p1Type)
-            self.p2 = self.playerSetUp(self.p2Type)
+            self.p1 = self.playerSetUp(self.p1Type, 0)
+            self.p2 = self.playerSetUp(self.p2Type, 1)
             self.won_games[0] = 0
             self.won_games[1] = 0
             simulation += 1
@@ -219,18 +219,18 @@ class universalBlotto :
                     print(val, act, act_string)
 
 # ================================== SETUP ==========================================
-    def playerSetUp(self, playerNum):
+    def playerSetUp(self, playerNum, pID):
             if playerNum == 0:
-                return random_agent.RandomAgent(player_id=1, num_actions=self.num_actions)
+                return random_agent.RandomAgent(player_id=pID, num_actions=self.num_actions)
             elif playerNum == 1:
                 return SARSAAgent(
-                            player_id=0,
+                            player_id=pID,
                             num_actions=self.num_actions,
                             epsilon_schedule=rl_tools.ConstantSchedule(0.2)
                             )
             elif playerNum == 2:
                 return tabular_qlearner.QLearner(
-                                player_id=1,
+                                player_id=pID,
                                 num_actions=self.num_actions,
                                 epsilon_schedule=rl_tools.ConstantSchedule(0.2)
                             )
