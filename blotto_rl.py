@@ -96,7 +96,7 @@ print("Possible Actions:", num_actions)
 #   20 % of the time: explore — pick a uniformly random action.
 # Keeping ε constant (no decay) maintains exploration throughout all 1M
 # episodes, which is useful when facing a fixed random opponent.
-opponent = tabular_qlearner.QLearner(player_id=1, num_actions=num_actions, epsilon_schedule=rl_tools.ConstantSchedule(0.2))
+rl_agent = tabular_qlearner.QLearner(player_id=0, num_actions=num_actions, epsilon_schedule=rl_tools.ConstantSchedule(0.2))
 #rl_agent = SARSAAgent(player_id=0, num_actions=num_actions, epsilon_schedule=rl_tools.ConstantSchedule(0.2))
 
 
@@ -104,7 +104,7 @@ opponent = tabular_qlearner.QLearner(player_id=1, num_actions=num_actions, epsil
 # It never updates any internal model — it is purely a stochastic baseline.
 # Training against it teaches the RL agent to exploit the *average* blotto
 # distribution, which can reveal strong dominant strategies.
-rl_agent = random_agent.RandomAgent(player_id=0, num_actions=num_actions)
+opponent = random_agent.RandomAgent(player_id=1, num_actions=num_actions)
 
 # ── Tracking Variables ────────────────────────────────────────
 
