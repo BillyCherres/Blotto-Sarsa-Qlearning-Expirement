@@ -51,7 +51,7 @@ rl_agent = tabular_qlearner.QLearner(
 
 # RandomAgent: uniform random baseline, never updates any model.
 opponent = tabular_qlearner.QLearner(
-    player_id=0,
+    player_id=1,
     num_actions=num_actions,
     epsilon_schedule=rl_tools.ConstantSchedule(0.2)
 )
