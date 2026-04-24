@@ -18,19 +18,23 @@ from blottoGeneral import universalBlotto
 #QvR.plotMultipleGraphs()
 #QvR.postTrainingAnalysis()
 
-RvQ = universalBlotto(player1=2, player2=2)
-RvQ.playSim()
-RvQ.plotMultipleGraphs()
+#RvQ = universalBlotto(player1=2, player2=2)
+#RvQ.playSim()
+#RvQ.plotMultipleGraphs()
 
 blottoGames = []
+episodeNum = 1000000
+simulationNum = 10000
 
-blottoGames.append(universalBlotto(player1=0, player2= 0)) # RvR
-blottoGames.append(universalBlotto(player1=2, player2= 0)) # QvR
-blottoGames.append(universalBlotto(player1=1, player2= 0)) # SvR
-blottoGames.append(universalBlotto(player1=2, player2= 2)) # QvQ
-blottoGames.append(universalBlotto(player1=2, player2= 1)) # QvS
-blottoGames.append(universalBlotto(player1=1, player2= 1)) # SvS
+
+blottoGames.append(universalBlotto(player1=2, player2= 0, simulations=simulationNum, episodes=episodeNum)) # QvR
+blottoGames.append(universalBlotto(player1=1, player2= 0, simulations=simulationNum, episodes=episodeNum)) # SvR
+blottoGames.append(universalBlotto(player1=2, player2= 1, simulations=simulationNum, episodes=episodeNum)) # QvS
+blottoGames.append(universalBlotto(player1=2, player2= 2, simulations=simulationNum, episodes=episodeNum)) # QvQ
+blottoGames.append(universalBlotto(player1=1, player2= 1, simulations=simulationNum, episodes=episodeNum)) # SvS
+blottoGames.append(universalBlotto(player1=0, player2= 0, simulations=simulationNum, episodes=episodeNum)) # RvR
 
 for i in range(len(blottoGames)):
     blottoGames[i].playSim()
-    blottoGames[i].plotMultipleGraphs()
+    #blottoGames[i].plotMultipleGraphs()
+    blottoGames[i].plotConvergenceGraph()
