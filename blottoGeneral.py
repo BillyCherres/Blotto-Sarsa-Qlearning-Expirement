@@ -26,7 +26,7 @@ class universalBlotto :
             player1, # 0 = random, 1 = sarsa , 2 = ql
             player2, 
             training = 0, # 0 = no, 1 = file 1, etc.
-            episodes = 100000,
+            episodes = 1000,
             simulations = 1,
             players = 2,
             fields = 3,
@@ -80,6 +80,8 @@ class universalBlotto :
         self.episodeArr = []
         self.avgX = []
         self.avgY = []
+        self.convergeX = []
+        self.convergeY = []
         # ========================================================
 
         self.last_probs = None
@@ -102,6 +104,8 @@ class universalBlotto :
         for i in range(len(self.avgX)):
             self.avgX[i] /= self.simCount
             self.avgY[i] /= self.simCount
+            self.convergeX[i] /= self.simCount
+            #self.convergeY[i] /= self.simCount
             
             
         
@@ -137,9 +141,12 @@ class universalBlotto :
             rewards = self.environment.get_state.returns()
             #print("Rewards:", rewards)
 
+            # win = +1
+            # tie = 0
+            # lose = -1
             self.won_games[0] += rewards[0] if rewards[0] > 0 else 0
             self.won_games[1] += rewards[1] if rewards[1] > 0 else 0
-
+            
             
             self.rl_won.append(self.won_games[0])
             self.opp_won.append(self.won_games[1])
@@ -152,9 +159,16 @@ class universalBlotto :
                 self.avgX.append(self.won_games[0])
                 self.avgY.append(self.won_games[1])
 
+                self.convergeX.append(rewards[0])
+                #self.convergeY.append(rewards[1])
+
             else: # add to current ones and divide to get average later
                 self.avgX[episode - 1] += (self.won_games[0])
                 self.avgY[episode - 1] += (self.won_games[1])
+
+                self.convergeX[episode - 1] += (rewards[0])
+                #self.convergeY[episode - 1] += (rewards[1])
+
             
 
             #print()
@@ -192,6 +206,24 @@ class universalBlotto :
             plt.xlabel("Episodes")
             plt.ylabel("Wins")
             plt.title("Average Wins per Simulation")
+
+            plt.legend()
+            plt.show()
+
+    def plotConvergenceGraph(self):
+            plt.figure()
+            # in one graphs
+            # plot the points
+            plt.plot(self.episodeArr[0: self.MAX_EPISODES], 
+                     self.convergeX, label = self.p1Label)
+            #plt.plot(self.episodeArr[0: self.MAX_EPISODES], 
+                     #self.convergeY, label = self.p2Label)
+            #plt.plot(self.avgX, 
+            #         self.avgY, 
+            #         label = str(self.p1Label, "vs", self.p2Label))
+            plt.xlabel("Episodes")
+            plt.ylabel("Wins")
+            plt.title("Convergence")
 
             plt.legend()
             plt.show()
