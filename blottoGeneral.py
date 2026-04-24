@@ -92,6 +92,7 @@ class universalBlotto :
 
         simulation = 0
         while simulation < self.simCount:
+            np.random.seed(simulation + 1) 
             print("Current Simulation: ", simulation)
             # reset agents and personal scores
             self.p1 = self.playerSetUp(self.p1Type, 0)
@@ -193,84 +194,116 @@ class universalBlotto :
             plt.show()
     
     def plotAverageGraph(self):
-            plt.figure()
-            # in one graphs
-            # plot the points
-            plt.plot(self.episodeArr[0: self.MAX_EPISODES], 
-                     self.avgX, label = self.p1Label)
-            plt.plot(self.episodeArr[0: self.MAX_EPISODES], 
-                     self.avgY, label = self.p2Label)
-            #plt.plot(self.avgX, 
-            #         self.avgY, 
-            #         label = str(self.p1Label, "vs", self.p2Label))
-            plt.xlabel("Episodes")
-            plt.ylabel("Wins")
-            plt.title("Average Wins per Simulation")
+        plt.figure()
+        # in one graphs
+        # plot the points
+        plt.plot(self.episodeArr[0: self.MAX_EPISODES], 
+                    self.avgX, label = self.p1Label)
+        plt.plot(self.episodeArr[0: self.MAX_EPISODES], 
+                    self.avgY, label = self.p2Label)
+        #plt.plot(self.avgX, 
+        #         self.avgY, 
+        #         label = str(self.p1Label, "vs", self.p2Label))
+        plt.xlabel("Episodes")
+        plt.ylabel("Wins")
+        plt.title("Average Wins per Simulation")
 
-            plt.legend()
-            plt.show()
+        plt.legend()
+        plt.show()
 
     def plotConvergenceGraph(self):
-            plt.figure()
-            # in one graphs
-            # plot the points
-            plt.plot(self.episodeArr[0: self.MAX_EPISODES], 
-                     self.convergeX, label = self.p1Label)
-            #plt.plot(self.episodeArr[0: self.MAX_EPISODES], 
-                     #self.convergeY, label = self.p2Label)
-            #plt.plot(self.avgX, 
-            #         self.avgY, 
-            #         label = str(self.p1Label, "vs", self.p2Label))
-            plt.xlabel("Episodes")
-            plt.ylabel("Wins")
-            plt.title("Convergence")
+        plt.figure()
+        # in one graphs
+        # plot the points
+        plt.plot(self.episodeArr[0: self.MAX_EPISODES], 
+                    self.convergeX, label = self.p1Label)
+        #plt.plot(self.episodeArr[0: self.MAX_EPISODES], 
+                    #self.convergeY, label = self.p2Label)
+        #plt.plot(self.avgX, 
+        #         self.avgY, 
+        #         label = str(self.p1Label, "vs", self.p2Label))
+        plt.xlabel("Episodes")
+        plt.ylabel("Wins")
+        plt.title("Convergence")
 
-            plt.legend()
-            plt.show()
-       
+        plt.legend()
+        plt.show()
+    
 
-    # ── Post-Training Analysis ────────────────────────────────────
-    def postTrainingAnalysis(self):
-        print("\nWON Games")
-        print("SARSA Agent:", int(self.won_games[0]))
-        print("Opponent (Random):", int(self.won_games[1]))
-        print(self.last_probs)
+    
 
-        print(self.p1._q_values['[0.0]'])
+# ── Post-Training Analysis ────────────────────────────────────
+    #def postTrainingAnalysis(self):
+    def writeToFile(self, fileW):
+        fileW.write("\nWON Games\n")
+        fileW.write(f"{self.p1Label}: {int(self.won_games[0])}\n")
+        fileW.write(f"{self.p2Label}: {int(self.won_games[1])}\n")
+        fileW.write(f"{self.last_probs}\n")
 
-        q_list = [self.p1._q_values['[0.0]'][act] for act in self.p1._q_values['[0.0]'].keys()]
+        if (self.p1Type != 0):
+            fileW.write(f"{self.p1._q_values['[0.0]']}\n")
 
-        done = set()
-        for val in sorted(q_list, reverse=True):
-            if val in done:
-                continue
-            done.add(val)
-            for act in self.p1._q_values['[0.0]'].keys():
-                if val == self.p1._q_values['[0.0]'][act]:
-                    act_string = self.environment.get_state.action_to_string(0, act)
-                    print(val, act, act_string)
+            q_list = [self.p1._q_values['[0.0]'][act] for act in self.p1._q_values['[0.0]'].keys()]
+
+            done = set()
+            for val in sorted(q_list, reverse=True):
+                if val in done:
+                    continue
+                done.add(val)
+                for act in self.p1._q_values['[0.0]'].keys():
+                    if val == self.p1._q_values['[0.0]'][act]:
+                        act_string = self.environment.get_state.action_to_string(0, act)
+                        fileW.write(f"{val} {act} {act_string}\n")
+        fileW.write("\n")
+        fileW.write("\n")
+        fileW.write("P2 \n")
+        print("File Half Way Done")
+        
+        if (self.p2Type != 0):
+            fileW.write(f"{self.p2._q_values['[0.0]']}\n")
+
+            q_list = [self.p2._q_values['[0.0]'][act] for act in self.p2._q_values['[0.0]'].keys()]
+
+            done = set()
+            for val in sorted(q_list, reverse=True):
+                if val in done:
+                    continue
+                done.add(val)
+                for act in self.p2._q_values['[0.0]'].keys():
+                    if val == self.p2._q_values['[0.0]'][act]:
+                        act_string = self.environment.get_state.action_to_string(0, act)
+                        fileW.write(f"{val} {act} {act_string}\n")
+
+
+
+
+    def createAndWriteInfo(self):
+        with open(f"{self.p1Label} vs. {self.p2Label} .txt", "w", encoding="utf-8") as f:
+                self.writeToFile(f)
+                print("File Created")
+                
 
 # ================================== SETUP ==========================================
     def playerSetUp(self, playerNum, pID):
-            if playerNum == 0:
-                return random_agent.RandomAgent(player_id=pID, num_actions=self.num_actions)
-            elif playerNum == 1:
-                return SARSAAgent(
-                            player_id=pID,
-                            num_actions=self.num_actions,
-                            epsilon_schedule=rl_tools.ConstantSchedule(0.2)
-                            )
-            elif playerNum == 2:
-                return tabular_qlearner.QLearner(
-                                player_id=pID,
-                                num_actions=self.num_actions,
-                                epsilon_schedule=rl_tools.ConstantSchedule(0.2)
-                            )
-            
+        if playerNum == 0:
+            return random_agent.RandomAgent(player_id=pID, num_actions=self.num_actions)
+        elif playerNum == 1:
+            return SARSAAgent(
+                player_id=pID,
+                num_actions=self.num_actions,
+                epsilon_schedule=rl_tools.ConstantSchedule(0.2)
+                )
+        elif playerNum == 2:
+            return tabular_qlearner.QLearner(
+                player_id=pID,
+                num_actions=self.num_actions,
+                epsilon_schedule=rl_tools.ConstantSchedule(0.2)
+                )
+        
     def playerLables(self, playerNum):
-                if playerNum == 0:
-                    return "Random Agent"
-                elif playerNum == 1:
-                    return "SARSA Agent"
-                elif playerNum == 2:
-                    return "QL Agent"
+        if playerNum == 0:
+            return "Random Agent"
+        elif playerNum == 1:
+            return "SARSA Agent"
+        elif playerNum == 2:
+            return "QL Agent"
