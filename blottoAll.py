@@ -11,6 +11,8 @@ from blottoGeneral import universalBlotto
 
 #sarsaVSql1 = universalBlotto(player1=1, player2=2,simulations=1)
 #sarsaVSql1.playSim()
+#sarsaVSql1.plotAverageGraph()
+
 #sarsaVSql1.plotMultipleGraphs()
 
 #QvR = universalBlotto(player1=2, player2=0)
@@ -21,6 +23,9 @@ from blottoGeneral import universalBlotto
 #RvQ = universalBlotto(player1=2, player2=2)
 #RvQ.playSim()
 #RvQ.plotMultipleGraphs()
+
+
+
 
 blottoGames = []
 episodeNum = 1000000
@@ -37,4 +42,8 @@ blottoGames.append(universalBlotto(player1=0, player2= 0, simulations=simulation
 for i in range(len(blottoGames)):
     blottoGames[i].playSim()
     #blottoGames[i].plotMultipleGraphs()
+
+for i in range(len(blottoGames)):
     blottoGames[i].plotConvergenceGraph()
+    blottoGames[i].plotAverageGraph()
+    blottoGames[i].createAndWriteInfo()
